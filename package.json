@@ -1,0 +1,22 @@
+{
+  "name": "dipesh-malvia",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "Bhargav",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^4.22.1",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^6.13.8"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
