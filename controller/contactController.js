@@ -1,9 +1,12 @@
 const asyncHandler = require("express-async-handler");
+const Contact = require("../models/contactModel");
+
 // @desc Get all contact
 // @routes GET /api/contacts
 // @access public
 const getContacts = asyncHandler(async (req, res) => {
-  res.status(200).json({ Message: "Get all contacts" });
+  const contacts = await Contact.find();
+  res.status(200).json(contacts);
 });
 
 // @desc Create contact
@@ -16,27 +19,57 @@ const createContact = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("All fields are require!");
   }
-  res.status(201).json({ Message: " Creare contact" });
+  const contact = await Contact.create({
+    Name,
+    Email,
+    Phone,
+  });
+  res.status(201).json(contact);
 });
 
 // @desc Get  contact
 // @routes GET /api/contacts/:id
 // @access public
 const getContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ Message: `Get contact for ${req.params.id}` });
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status = 404;
+    throw new Error("Contact not fount");
+  }
+  res.status(200).json(contact);
 });
 
 // @desc Update contact
 // @routes POST /api/contacts:id
 // @access public
 const updateContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ Message: `Update contact for ${req.params.id}` });
+  //first fetch the contact
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status = 404;
+    throw new Error("Contact not fount");
+  }
+  // Update now
+  const updatedContact = await Contact.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.status(200).json(updatedContact);
 });
 // @desc Delete contact
 // @routes DELETE /api/contacts:id
 // @access public
 const deleteContact = asyncHandler(async (req, res) => {
-  res.status(201).json({ Message: `Delete contact for ${req.params.id}` });
+  //first fetch the contact
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status = 404;
+    throw new Error("Contact not fount");
+  }
+  // Delete now
+  await contact.remove();
+  res.status(201).json(contact);
 });
 
 module.exports = {

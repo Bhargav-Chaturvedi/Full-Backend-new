@@ -40,7 +40,7 @@ const errorHandler = (err, req, res, next) => {
       break;
 
     default:
-      console.log("Not error found ✔️");
+      console.log("No error found ✔️");
       break;
   }
 };
