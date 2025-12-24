@@ -3,15 +3,16 @@ const Contact = require("../models/contactModel");
 
 // @desc Get all contact
 // @routes GET /api/contacts
-// @access public
+// @access private
 const getContacts = asyncHandler(async (req, res) => {
-  const contacts = await Contact.find();
+  const contacts = await Contact.find({ user_id: req.user.id });
+
   res.status(200).json(contacts);
 });
 
 // @desc Create contact
 // @routes POST /api/contacts
-// @access public
+// @access private
 const createContact = asyncHandler(async (req, res) => {
   console.log("The request body is: ", req.body);
   const { Name, Email, Phone } = req.body;
@@ -23,17 +24,18 @@ const createContact = asyncHandler(async (req, res) => {
     Name,
     Email,
     Phone,
+    user_id: req.user.id,
   });
   res.status(201).json(contact);
 });
 
 // @desc Get  contact
 // @routes GET /api/contacts/:id
-// @access public
+// @access private
 const getContact = asyncHandler(async (req, res) => {
   const contact = await Contact.findById(req.params.id);
   if (!contact) {
-    res.status = 404;
+    res.status(404);
     throw new Error("Contact not fount");
   }
   res.status(200).json(contact);
@@ -41,13 +43,19 @@ const getContact = asyncHandler(async (req, res) => {
 
 // @desc Update contact
 // @routes POST /api/contacts:id
-// @access public
+// @access private
 const updateContact = asyncHandler(async (req, res) => {
   //first fetch the contact
   const contact = await Contact.findById(req.params.id);
   if (!contact) {
-    res.status = 404;
+    res.status(404);
     throw new Error("Contact not fount");
+  }
+  if (contact.user_id.toString() !== req.user.id) {
+    res.status(403);
+    throw new Error(
+      "User don't have permission to update other user's contact"
+    );
   }
   // Update now
   const updatedContact = await Contact.findByIdAndUpdate(
@@ -59,16 +67,22 @@ const updateContact = asyncHandler(async (req, res) => {
 });
 // @desc Delete contact
 // @routes DELETE /api/contacts:id
-// @access public
+// @access private
 const deleteContact = asyncHandler(async (req, res) => {
   //first fetch the contact
   const contact = await Contact.findById(req.params.id);
   if (!contact) {
-    res.status = 404;
+    res.status(404);
     throw new Error("Contact not fount");
   }
+  if (contact.user_id.toString() !== req.user.id) {
+    res.status(403);
+    throw new Error(
+      "User don't have permission to delete other user's contact"
+    );
+  }
   // Delete now
-  await contact.remove();
+  await contact.deleteOne({ _id: req.params.id });
   res.status(201).json(contact);
 });
 

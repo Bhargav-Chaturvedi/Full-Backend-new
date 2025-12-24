@@ -4,6 +4,7 @@ const {
   loginUser,
   currentUser,
 } = require("../controller/userController");
+const validateToken = require("../middleware/validateTokenHandler");
 const router = express.Router();
 
 // ONLY same routes can be chained using
@@ -11,6 +12,6 @@ router.post("/register", registerUser);
 
 router.post("/login", loginUser);
 
-router.get("/current", currentUser);
+router.get("/current", validateToken, currentUser);
 
 module.exports = router;
