@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 // app.use - middleware
 app.use(express.json());
+app.use(require("cors")()); // Allow all origins for dev
 app.use("/api/contacts", require("./routes/contactRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 app.use(errorHandler);

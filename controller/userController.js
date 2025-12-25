@@ -36,14 +36,11 @@ const registerUser = asyncHandler(async (req, res) => {
   });
   console.log(`User created ${user}`);
   if (user) {
-    res
-      .status(201)
-      .json({ _id: user.id, email: user.email, username: user.username });
+    res.status(201).json({ _id: user.id, email: user.email, username: user.username });
   } else {
     res.status(400);
     throw new Error("User data is not valid");
   }
-  res.status(200).json({ message: "User registered successfully" });
 });
 
 // @desc login user
